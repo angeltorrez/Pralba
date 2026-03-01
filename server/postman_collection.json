@@ -1,0 +1,207 @@
+{
+  "info": {
+    "name": "PresuObra API",
+    "description": "API endpoints for PresuObra backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health & Info",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            }
+          }
+        },
+        {
+          "name": "Server Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Budgets",
+      "item": [
+        {
+          "name": "Get Initial Budgets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/budgets/initial?limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "budgets", "initial"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Budgets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/budgets?page=1&limit=50",
+              "host": ["{{base_url}}"],
+              "path": ["api", "budgets"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Budget by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/budgets/budget-123",
+              "host": ["{{base_url}}"],
+              "path": ["api", "budgets", "budget-123"]
+            }
+          }
+        },
+        {
+          "name": "Create Budget",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"budget-001\",\n  \"clientOrProject\": \"Reforma casa calle principal\",\n  \"totalAmount\": 5000.50,\n  \"works\": [\n    {\n      \"id\": \"work-1\",\n      \"jobName\": \"Albañilería\",\n      \"quantity\": 10,\n      \"unitPrice\": 500,\n      \"total\": 5000,\n      \"estimatedMaterials\": [\"Cemento\", \"Arena\", \"Ladrillos\"]\n    }\n  ],\n  \"createdAt\": \"{{timestamp}}\",\n  \"updatedAt\": \"{{timestamp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/budgets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "budgets"]
+            }
+          }
+        },
+        {
+          "name": "Delete Budget",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/budgets/budget-003",
+              "host": ["{{base_url}}"],
+              "path": ["api", "budgets", "budget-003"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "List Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs?limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs/job-1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "job-1"]
+            }
+          }
+        },
+        {
+          "name": "Create Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"job-5\",\n  \"name\": \"Carpintería\",\n  \"estimatedMaterials\": [\"Madera\", \"Clavos\", \"Tornillos\", \"Pegamento\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs/job-5",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "job-5"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "timestamp",
+      "value": "2024-01-15T10:30:00Z",
+      "type": "string"
+    }
+  ]
+}

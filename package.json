@@ -1,0 +1,25 @@
+{
+  "name": "presuobra",
+  "version": "1.0.0",
+  "description": "PresuObra - Budget/Quote Management System",
+  "private": true,
+  "workspaces": [
+    "packages/frontend",
+    "packages/backend"
+  ],
+  "scripts": {
+    "frontend:install": "cd packages/frontend && npm install",
+    "backend:install": "cd packages/backend && npm install",
+    "frontend:dev": "cd packages/frontend && npm start",
+    "backend:dev": "cd packages/backend && npm start",
+    "install:all": "npm install && npm run frontend:install && npm run backend:install"
+  },
+  "keywords": [
+    "presupuesto",
+    "quotes",
+    "budget",
+    "construction"
+  ],
+  "author": "Angel Torrez",
+  "license": "MIT"
+}
