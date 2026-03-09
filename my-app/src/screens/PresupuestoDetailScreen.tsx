@@ -23,7 +23,7 @@ import { PresupuestoDetalle } from '../types';
 import { formatCurrency, calculateTotal } from '../utils/presupuestoHelpers';
 import { formatDateLong } from '../utils/dateFormatter';
 
-type PresupuestoDetailScreenProps = NativeStackScreenProps<any, 'BudgetDetail'>;
+type PresupuestoDetailScreenProps = NativeStackScreenProps<any, 'DetallePresupuesto'>;
 
 export const PresupuestoDetailScreen: React.FC<PresupuestoDetailScreenProps> = ({
   route,
@@ -35,7 +35,7 @@ export const PresupuestoDetailScreen: React.FC<PresupuestoDetailScreenProps> = (
   const [loading, setLoading] = useState(true);
   const { fetchPresupuestoDetail, deletePresupuesto } = usePresupuesto();
 
-  const presupuestoId = route.params?.budgetId;
+  const presupuestoId = route.params?.presupuestoId;
 
   useEffect(() => {
     loadPresupuesto();
@@ -78,7 +78,7 @@ export const PresupuestoDetailScreen: React.FC<PresupuestoDetailScreenProps> = (
   };
 
   const handleGeneratePDF = () => {
-    navigation.navigate('BudgetPDF', { budgetId: presupuestoId });
+    navigation.navigate('PresupuestoPDF', { presupuestoId });
   };
 
   if (loading) {

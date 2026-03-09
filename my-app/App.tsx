@@ -41,7 +41,7 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
-        name="CreateBudget"
+        name="CrearPresupuesto"
         component={CreatePresupuestoScreen}
         options={{
           title: 'Nuevo Presupuesto',
@@ -50,7 +50,7 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
-        name="BudgetDetail"
+        name="DetallePresupuesto"
         component={PresupuestoDetailScreen}
         options={{
           title: 'Detalle del Presupuesto',
@@ -58,7 +58,7 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
-        name="BudgetPDF"
+        name="PresupuestoPDF"
         component={PresupuestoPDFScreen}
         options={{
           title: 'Generar PDFs',
