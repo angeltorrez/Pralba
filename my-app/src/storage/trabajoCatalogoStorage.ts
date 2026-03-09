@@ -3,11 +3,11 @@
  * Manages CRUD operations for TrabajoCatalogo in SQLite
  */
 
-import { Database } from 'expo-sqlite';
+import { SQLiteDatabase } from 'expo-sqlite';
 import { TrabajoCatalogo, TrabajoMaterial, Material } from '../types';
 
 export class TrabajoCatalogoStorage {
-  constructor(private db: Database) {}
+  constructor(private db: SQLiteDatabase) {}
 
   /**
    * Get all trabajos from catalog

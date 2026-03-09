@@ -19,12 +19,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 import { usePresupuesto } from '../hooks/usePresupuesto';
-import { JobAutocomplete } from '../components/JobAutocomplete';
+import { TrabajoAutocomplete } from '../components/TrabajoAutocomplete';
 import { PresupuestoItemCard } from '../components/PresupuestoItemCard';
 import { calculateTotal, formatCurrency, validatePresupuesto } from '../utils/presupuestoHelpers';
 import { TrabajoCatalogo, Cliente } from '../types';
 
-type CreatePresupuestoScreenProps = NativeStackScreenProps<any, 'CreateBudget'>;
+type CreatePresupuestoScreenProps = NativeStackScreenProps<any, 'CrearPresupuesto'>;
 
 interface TrabajoPendiente {
   trabajo_catalogo_id: number;
@@ -35,8 +35,7 @@ interface TrabajoPendiente {
 }
 
 export const CreatePresupuestoScreen: React.FC<CreatePresupuestoScreenProps> = ({
-  navigation,
-  route,
+  navigation
 }) => {
   const { colors, fontScaling } = useTheme();
   const insets = useSafeAreaInsets();
@@ -201,7 +200,7 @@ export const CreatePresupuestoScreen: React.FC<CreatePresupuestoScreenProps> = (
             Agregar Trabajo
           </Text>
 
-          <JobAutocomplete
+          <TrabajoAutocomplete
             value={jobSearch}
             onSelect={handleSelectTrabajo}
             onChangeText={setJobSearch}

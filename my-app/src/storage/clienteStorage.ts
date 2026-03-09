@@ -3,11 +3,11 @@
  * Manages CRUD operations for Cliente in SQLite
  */
 
-import { Database } from 'expo-sqlite';
+import { SQLiteDatabase } from 'expo-sqlite';
 import { Cliente } from '../types';
 
 export class ClienteStorage {
-  constructor(private db: Database) {}
+  constructor(private db: SQLiteDatabase) {}
 
   /**
    * Get all clientes
