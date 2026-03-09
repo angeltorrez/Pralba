@@ -15,7 +15,6 @@ import { useTheme } from '../context/ThemeContext';
 import { Budget } from '../types';
 import { budgetStorage } from '../storage/budgetStorage';
 import { formatDateLong } from '../utils/dateFormatter';
-import { formatMaterial } from '../utils/calculateMaterials';
 
 type BudgetDetailScreenProps = NativeStackScreenProps<any, 'BudgetDetail'>;
 
@@ -44,7 +43,7 @@ export const BudgetDetailScreen: React.FC<BudgetDetailScreenProps> = ({ route, n
     if (budget) {
       navigation.navigate('CreateBudget', { 
         budgetId,
-        createdAt: budget.createdAt
+        fecha: budget.fecha
       });
     }
   };
@@ -58,8 +57,12 @@ export const BudgetDetailScreen: React.FC<BudgetDetailScreenProps> = ({ route, n
         {
           text: 'Eliminar',
           onPress: async () => {
-            await budgetStorage.deleteBudget(budgetId);
-            navigation.goBack();
+            try {
+              await budgetStorage.deleteBudget(budgetId);
+              navigation.goBack();
+            } catch (error) {
+              Alert.alert('Error', 'No se pudo eliminar el presupuesto');
+            }
           },
           style: 'destructive',
         },
@@ -96,87 +99,76 @@ export const BudgetDetailScreen: React.FC<BudgetDetailScreenProps> = ({ route, n
       <ScrollView style={styles.content}>
         <View style={styles.header}>
           <Text style={[styles.title, { color: colors.text, fontSize: fontScaling.heading1 }]}>
-            {budget.clientOrProject}
+            Presupuesto #{budget.id}
           </Text>
         </View>
 
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fontScaling.heading3 }]}>
-            Total del Presupuesto
+            Información del Presupuesto
+          </Text>
+          <View style={[styles.infoBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <View style={styles.infoRow}>
+              <Text style={[styles.infoLabel, { color: colors.textSecondary, fontSize: fontScaling.small }]}>
+                Fecha:
+              </Text>
+              <Text style={[styles.infoValue, { color: colors.text, fontSize: fontScaling.body }]}>
+                {new Date(budget.fecha).toLocaleDateString('es-ES')}
+              </Text>
+            </View>
+            <View style={styles.divider} />
+            <View style={styles.infoRow}>
+              <Text style={[styles.infoLabel, { color: colors.textSecondary, fontSize: fontScaling.small }]}>
+                Total Mano de Obra:
+              </Text>
+              <Text style={[styles.infoValue, { color: colors.success, fontSize: fontScaling.heading3, fontWeight: 'bold' }]}>
+                ${budget.total_mano_obra.toFixed(2)}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fontScaling.heading3 }]}>
+            Total Final
           </Text>
           <View style={[styles.totalBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
             <Text style={[styles.totalAmount, { color: colors.success, fontSize: fontScaling.heading1 }]}>
-              ${budget.totalAmount.toFixed(2)}
+              ${budget.total_final.toFixed(2)}
             </Text>
           </View>
         </View>
 
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fontScaling.heading3 }]}>
-            Trabajos ({budget.works.length})
+            Trabajos ({budget.trabajos?.length || 0})
           </Text>
-          <FlatList
-            data={budget.works}
-            renderItem={({ item }) => (
-              <View>
+          {budget.trabajos && budget.trabajos.length > 0 ? (
+            <FlatList
+              data={budget.trabajos}
+              scrollEnabled={false}
+              renderItem={({ item }) => (
                 <View style={[styles.itemRow, { backgroundColor: colors.surface, borderLeftColor: colors.primary }]}>
                   <View style={styles.itemInfo}>
                     <Text style={[styles.itemDesc, { color: colors.text, fontSize: fontScaling.body }]}>
-                      {item.jobName}
+                      Trabajo #{item.id}
                     </Text>
                     <Text style={[styles.itemMeta, { color: colors.textSecondary, fontSize: fontScaling.small }]}>
-                      {item.quantity} {item.unit || 'unidad'} × ${item.unitPrice.toFixed(2)}
+                      {item.cantidad} × ${item.precio_unitario.toFixed(2)}
                     </Text>
                   </View>
                   <Text style={[styles.itemTotal, { color: colors.success, fontSize: fontScaling.body }]}>
-                    ${item.total.toFixed(2)}
+                    ${item.subtotal.toFixed(2)}
                   </Text>
                 </View>
-                {item.calculatedMaterials && item.calculatedMaterials.length > 0 && (
-                  <View style={[styles.materialsContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                    <Text style={[styles.materialsTitle, { color: colors.text, fontSize: fontScaling.small }]}>
-                      📦 Materiales:
-                    </Text>
-                    {item.calculatedMaterials.map((material, idx) => (
-                      <Text
-                        key={idx}
-                        style={[
-                          styles.materialItem,
-                          { color: colors.textSecondary, fontSize: fontScaling.small },
-                        ]}
-                      >
-                        • {formatMaterial(material)}
-                      </Text>
-                    ))}
-                  </View>
-                )}
-              </View>
-            )}
-            keyExtractor={item => item.id}
-            scrollEnabled={false}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text, fontSize: fontScaling.heading3 }]}>
-            Información
-          </Text>
-          <View style={[styles.infoBox, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.infoLabel, { color: colors.textSecondary, fontSize: fontScaling.small }]}>
-              Creado:
+              )}
+              keyExtractor={item => item.id.toString()}
+            />
+          ) : (
+            <Text style={[styles.emptyText, { color: colors.textSecondary, fontSize: fontScaling.small }]}>
+              Sin trabajos registrados
             </Text>
-            <Text style={[styles.infoValue, { color: colors.text, fontSize: fontScaling.body }]}>
-              {formatDateLong(budget.createdAt)}
-            </Text>
-          </View>
-          <View style={[styles.infoBox, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.infoLabel, { color: colors.textSecondary, fontSize: fontScaling.small }]}>
-              Actualizado:
-            </Text>
-            <Text style={[styles.infoValue, { color: colors.text, fontSize: fontScaling.body }]}>
-              {formatDateLong(budget.updatedAt)}
-            </Text>
-          </View>
+          )}
         </View>
       </ScrollView>
 
@@ -194,7 +186,7 @@ export const BudgetDetailScreen: React.FC<BudgetDetailScreenProps> = ({ route, n
           onPress={handleGeneratePDF}
         >
           <Text style={[styles.pdfBtnText, { fontSize: fontScaling.body }]}>
-            PDFs
+            PDF
           </Text>
         </TouchableOpacity>
         <TouchableOpacity 
@@ -298,11 +290,26 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
   },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
   infoLabel: {
     fontWeight: '600',
   },
   infoValue: {
     marginTop: 4,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#eee',
+    marginVertical: 8,
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginVertical: 16,
   },
   footer: {
     flexDirection: 'row',

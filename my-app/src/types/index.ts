@@ -1,8 +1,3 @@
-/**
- * TypeScript Interfaces for PresuObra
- * Relational Database Model
- */
-
 // ============================================
 // CLIENTE - Customer/Client
 // ============================================
@@ -13,8 +8,8 @@ export interface Cliente {
   telefono?: string;
   direccion?: string;
   email?: string;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ============================================
@@ -30,8 +25,8 @@ export interface TrabajoCatalogo {
   unidad_medida: UnidadMedida;
   precio_unitario: number;
   descripcion?: string;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ============================================
@@ -42,35 +37,28 @@ export interface Material {
   id: number;
   nombre: string;
   unidad_medida: UnidadMaterial;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ============================================
 // TRABAJO-MATERIAL - Material Requirements
 // ============================================
 
-export interface MaterialFormula {
+export interface TrabajoMaterial {
   id: number;
   trabajo_catalogo_id: number;
   material_id: number;
   cantidad_por_unidad: number;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-// Alias for compatibility
-export type TrabajoMaterial = MaterialFormula;
 
 // ============================================
 // TRABAJO EN PRESUPUESTO - Line Item
 // ============================================
 
-/**
- * This represents a work item added to a presupuesto
- * The precio_unitario is COPIED from the catalog at creation time
- * so changes to catalog prices don't affect existing presupuestos
- */
 export interface TrabajoPresupuesto {
   id: number;
   presupuesto_id: number;
@@ -83,24 +71,18 @@ export interface TrabajoPresupuesto {
 }
 
 // ============================================
-// PRESUPUESTO - Budget/Quote
+// PRESUPUESTO
 // ============================================
 
-/**
- * Main budget/quote entity
- * Contains all line items (trabajos) and metadata
- * total_mano_obra = sum of all subtotals
- * total_final = total_mano_obra (materials don't add to total)
- */
 export interface Presupuesto {
   id: number;
   cliente_id: number;
-  fecha: number;
+  fecha: string;
   total_mano_obra: number;
   total_final: number;
   trabajos: TrabajoPresupuesto[];
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
   synced?: boolean;
 }
 
@@ -135,10 +117,17 @@ export interface SyncMetadata {
 
 export interface CreatePresupuestoData {
   cliente_id: number;
-  fecha: number;
+  fecha: string;
   trabajos: Array<{
     trabajo_catalogo_id: number;
     cantidad: number;
     precio_unitario: number;
   }>;
 }
+
+// ============================================
+// ALIASES FOR TYPESCRIPT NAMING CONSISTENCY
+// ============================================
+// English aliases for existing Spanish types
+export type JobWork = TrabajoPresupuesto;
+export type Job = TrabajoCatalogo;

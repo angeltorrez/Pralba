@@ -13,14 +13,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { useTheme } from '../context/ThemeContext';
-import { Budget } from '../types';
+import { Presupuesto,PresupuestoDetalle } from '../types';
 import { budgetStorage } from '../storage/budgetStorage';
-import { jobsStorage } from '../storage/jobsStorage';
+import { getTrabajoCatalogoStorage } from '../storage/storageFactory';
 import { formatDateForPDF } from '../utils/dateFormatter';
 import { formatMaterial, groupMaterialsByName } from '../utils/calculateMaterials';
-
 type RootStackParamList = {
-  BudgetPDF: { budgetId: string };
+  BudgetPDF: { budgetId: string | number };
 };
 
 type BudgetPDFScreenProps = NativeStackScreenProps<RootStackParamList, 'BudgetPDF'>;
@@ -28,8 +27,9 @@ type BudgetPDFScreenProps = NativeStackScreenProps<RootStackParamList, 'BudgetPD
 export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigation }) => {
   const { colors, fontScaling } = useTheme();
   const insets = useSafeAreaInsets();
-  const [budget, setBudget] = useState<Budget | null>(null);
-  const [jobsData, setJobsData] = useState<any[]>([]);
+  const jobCatalogoStorage = getTrabajoCatalogoStorage();
+  const [presupuesto, setPresupuesto] = useState<Presupuesto | null>(null);
+  const [presupuestoDetalle, setPresupuestoDetalle] = useState<PresupuestoDetalle | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,13 +38,14 @@ export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigat
 
   const loadBudgetData = async () => {
     try {
-      const budgetData = await budgetStorage.getBudgetById(route.params.budgetId);
-      setBudget(budgetData);
-
-      const jobs = await jobsStorage.getAllJobs();
-      setJobsData(jobs);
+      const budgetData = await budgetStorage.getBudgetById(
+        typeof route.params.budgetId === 'string' 
+          ? parseInt(route.params.budgetId, 10)
+          : route.params.budgetId
+      );
+      setPresupuesto(budgetData);
     } catch (error) {
-      console.error('Error loading budget:', error);
+      console.error('Error cargando presupuesto:', error);
       Alert.alert('Error', 'No se pudo cargar el presupuesto');
     } finally {
       setLoading(false);
@@ -52,7 +53,7 @@ export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigat
   };
 
   const generateWorksPDF = async () => {
-    if (!budget) return;
+    if (!presupuesto) return;
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -116,8 +117,8 @@ export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigat
         <body>
           <div class="header">
             <h1>Presupuesto de Trabajos</h1>
-            <p><strong>Cliente/Obra:</strong> ${budget.clientOrProject}</p>
-            <p><strong>Fecha:</strong> ${formatDateForPDF(budget.createdAt)}</p>
+            <p><strong>Cliente/Obra:</strong> ${presupuestoDetalle.cliente.nombre}</p>
+            <p><strong>Fecha:</strong> ${formatDateForPDF(presupuesto.fecha)}</p>
           </div>
 
           <table class="works-table">
@@ -130,7 +131,7 @@ export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigat
               </tr>
             </thead>
             <tbody>
-              ${budget.works
+              ${presupuesto.works
                 .map(
                   (work) => `
                 <tr>
@@ -146,7 +147,7 @@ export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigat
           </table>
 
           <div class="total-section">
-            <h3>Total del Presupuesto: $${budget.totalAmount.toFixed(2)}</h3>
+            <h3>Total del Presupuesto: $${presupuesto.totalAmount.toFixed(2)}</h3>
           </div>
         </body>
       </html>
@@ -168,7 +169,7 @@ export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigat
   };
 
   const generateMaterialsPDF = async () => {
-    if (!budget) return;
+    if (!presupuesto) return;
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -260,11 +261,11 @@ export const BudgetPDFScreen: React.FC<BudgetPDFScreenProps> = ({ route, navigat
         <body>
           <div class="header">
             <h1>Presupuesto - Materiales Estimados</h1>
-            <p><strong>Cliente/Obra:</strong> ${budget.clientOrProject}</p>
-            <p><strong>Fecha:</strong> ${formatDateForPDF(budget.createdAt)}</p>
+            <p><strong>Cliente/Obra:</strong> ${presupuesto.clientOrProject}</p>
+            <p><strong>Fecha:</strong> ${formatDateForPDF(presupuesto.createdAt)}</p>
           </div>
 
-          ${budget.works
+          ${presupuesto.works
             .map(
               (work) => {
                 const hasMaterials = work.calculatedMaterials && work.calculatedMaterials.length > 0;

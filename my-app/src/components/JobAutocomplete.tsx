@@ -8,11 +8,12 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { jobsStorage, Job } from '../storage/jobsStorage';
+import { getTrabajoCatalogoStorage } from '../storage/storageFactory';
+import { TrabajoCatalogo } from '../types';
 
 interface JobAutocompleteProps {
   value: string;
-  onSelect: (job: Job) => void;
+  onSelect: (job: TrabajoCatalogo) => void;
   onChangeText: (text: string) => void;
   onAddNew?: (jobName: string) => void;
   placeholder?: string;
@@ -26,8 +27,9 @@ export const JobAutocomplete: React.FC<JobAutocompleteProps> = ({
   placeholder = 'Buscar o agregar trabajo...',
 }) => {
   const { colors, fontScaling } = useTheme();
-  const [suggestions, setSuggestions] = useState<Job[]>([]);
+  const [suggestions, setSuggestions] = useState<TrabajoCatalogo[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const jobCatalogoStorage = getTrabajoCatalogoStorage();
 
   useEffect(() => {
     if (value.trim().length > 0) {
@@ -39,12 +41,20 @@ export const JobAutocomplete: React.FC<JobAutocompleteProps> = ({
   }, [value]);
 
   const searchJobs = async () => {
-    const results = await jobsStorage.searchJobs(value);
-    setSuggestions(results);
-    setIsOpen(true);
+    try {
+      const allJobs = await jobCatalogoStorage.getAllTrabajos();
+      const results = allJobs.filter(job =>
+        job.nombre.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(results);
+      setIsOpen(true);
+    } catch (error) {
+      console.error('Error searching jobs:', error);
+      setSuggestions([]);
+    }
   };
 
-  const handleSelectSuggestion = (job: Job) => {
+  const handleSelectSuggestion = (job: TrabajoCatalogo) => {
     onSelect(job);
     onChangeText('');
     setIsOpen(false);
@@ -88,7 +98,7 @@ export const JobAutocomplete: React.FC<JobAutocompleteProps> = ({
             <>
               <FlatList
                 data={suggestions}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.id.toString()}
                 scrollEnabled={false}
                 renderItem={({ item }) => (
                   <TouchableOpacity
@@ -96,7 +106,7 @@ export const JobAutocomplete: React.FC<JobAutocompleteProps> = ({
                     onPress={() => handleSelectSuggestion(item)}
                   >
                     <Text style={[styles.suggestionText, { color: colors.text }]}>
-                      {item.name}
+                      {item.nombre}
                     </Text>
                   </TouchableOpacity>
                 )}
