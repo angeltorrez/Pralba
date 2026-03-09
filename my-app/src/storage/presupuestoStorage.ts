@@ -3,7 +3,7 @@
  * Manages CRUD operations for Presupuesto and TrabajoPresupuesto in SQLite
  */
 
-import { Database } from 'expo-sqlite';
+import { SQLiteDatabase } from 'expo-sqlite';
 import { 
   Presupuesto, 
   TrabajoPresupuesto,
@@ -22,7 +22,7 @@ export class PresupuestoStorage {
   private trabajoCatalogoStorage: TrabajoCatalogoStorage;
 
   constructor(
-    private db: Database,
+    private db: SQLiteDatabase,
     clienteStorage: ClienteStorage,
     trabajoCatalogoStorage: TrabajoCatalogoStorage
   ) {

@@ -23,7 +23,7 @@ import { PresupuestoDetalle } from '../types';
 import { groupAndAggregateMaterials, formatMaterialDisplay, formatCurrency } from '../utils/presupuestoHelpers';
 import { formatDateForPDF } from '../utils/dateFormatter';
 
-type PresupuestoPDFScreenProps = NativeStackScreenProps<any, 'BudgetPDF'>;
+type PresupuestoPDFScreenProps = NativeStackScreenProps<any, 'PresupuestoPDF'>;
 
 export const PresupuestoPDFScreen: React.FC<PresupuestoPDFScreenProps> = ({ route, navigation }) => {
   const { colors, fontScaling } = useTheme();
@@ -33,7 +33,7 @@ export const PresupuestoPDFScreen: React.FC<PresupuestoPDFScreenProps> = ({ rout
   const [generating, setGenerating] = useState(false);
   const { fetchPresupuestoDetail } = usePresupuesto();
 
-  const presupuestoId = route.params?.budgetId;
+  const presupuestoId = route.params?.presupuestoId;
 
   useEffect(() => {
     loadPresupuesto();

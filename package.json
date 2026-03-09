@@ -1,17 +1,17 @@
 {
   "name": "presuobra",
   "version": "1.0.0",
-  "description": "PresuObra - Budget/Quote Management System",
+  "description": "PresuObra - Sistema de gestión de presupuestos",
   "private": true,
   "workspaces": [
-    "packages/frontend",
-    "packages/backend"
+    "my-app",
+    "server"
   ],
   "scripts": {
-    "frontend:install": "cd packages/frontend && npm install",
-    "backend:install": "cd packages/backend && npm install",
-    "frontend:dev": "cd packages/frontend && npm start",
-    "backend:dev": "cd packages/backend && npm start",
+    "frontend:install": "cd my-app && npm install",
+    "backend:install": "cd server && npm install",
+    "frontend:dev": "cd my-app && npm start",
+    "backend:dev": "cd server && npm start",
     "install:all": "npm install && npm run frontend:install && npm run backend:install"
   },
   "keywords": [

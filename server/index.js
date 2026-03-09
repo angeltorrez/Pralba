@@ -339,6 +339,20 @@ app.post('/api/materiales', async (req, res) => {
 // ============================================
 
 /**
+ * GET /api/trabajo-materiales
+ * Obtener relaciones trabajo-material
+ */
+app.get('/api/trabajo-materiales', async (req, res) => {
+  try {
+    const relaciones = await TrabajoMaterial.find().lean();
+    res.json({ success: true, data: relaciones, count: relaciones.length });
+  } catch (error) {
+    console.error('Error fetching trabajo-materiales:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
  * POST /api/trabajo-materiales
  * Asociar material a un trabajo
  */
