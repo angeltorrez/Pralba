@@ -83,7 +83,7 @@ export interface TrabajoPresupuesto {
 }
 
 // ============================================
-// PRESUPUESTO - Budget/Quote
+// PRESUPUESTO
 // ============================================
 
 /**

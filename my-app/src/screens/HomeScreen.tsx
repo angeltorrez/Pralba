@@ -84,11 +84,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, [presupuestos]);
 
   const handleCreatePresupuesto = () => {
-    navigation.navigate('CreateBudget');
+    navigation.navigate('CrearPresupuesto');
   };
 
   const handleSelectPresupuesto = (presupuesto: PresupuestoItem) => {
-    navigation.navigate('BudgetDetail', { budgetId: presupuesto.id });
+    navigation.navigate('DetallePresupuesto', { presupuestoId: presupuesto.id });
   };
 
   const renderPresupuestoCard = ({ item }: { item: PresupuestoItem }) => (

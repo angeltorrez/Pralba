@@ -3,7 +3,7 @@
  * Centralizes initialization of all storage layers
  */
 
-import { Database } from 'expo-sqlite';
+import { SQLiteDatabase } from 'expo-sqlite';
 import { ClienteStorage } from './clienteStorage';
 import { TrabajoCatalogoStorage } from './trabajoCatalogoStorage';
 import { MaterialStorage } from './materialStorage';
@@ -14,7 +14,7 @@ let trabajoCatalogoStorageInstance: TrabajoCatalogoStorage | null = null;
 let materialStorageInstance: MaterialStorage | null = null;
 let presupuestoStorageInstance: PresupuestoStorage | null = null;
 
-export const initializeStorages = (db: Database) => {
+export const initializeStorages = (db: SQLiteDatabase) => {
   clienteStorageInstance = new ClienteStorage(db);
   trabajoCatalogoStorageInstance = new TrabajoCatalogoStorage(db);
   materialStorageInstance = new MaterialStorage(db);
